@@ -662,6 +662,10 @@ static bool do_disembark(struct player *act_player,
   unit_move(act_unit, tgt_tile, move_cost,
             NULL, FALSE, FALSE, FALSE, FALSE);
 
+  /* May cause an incident */
+  action_consequence_success(paction, act_player, tile_owner(tgt_tile),
+                             tgt_tile, tile_link(tgt_tile));
+
   return TRUE;
 }
 
