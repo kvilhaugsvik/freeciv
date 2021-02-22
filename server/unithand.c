@@ -680,6 +680,7 @@ static bool do_unit_hut(struct player *act_player,
                         struct tile *tgt_tile,
                         const struct action *paction)
 {
+  struct player *tgt_player = tile_owner(tgt_tile);
   int move_cost = map_move_cost_unit(&(wld.map), act_unit, tgt_tile);
 
   /* Sanity checks */
@@ -690,6 +691,10 @@ static bool do_unit_hut(struct player *act_player,
 
   unit_move(act_unit, tgt_tile, move_cost,
             NULL, FALSE, FALSE, FALSE, TRUE);
+
+  /* May cause an incident */
+  action_consequence_success(paction, act_player, tgt_player,
+                             tgt_tile, tile_link(tgt_tile));
 
   return TRUE;
 }
