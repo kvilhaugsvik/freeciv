@@ -4363,6 +4363,11 @@ bool unit_move_handling(struct unit *punit, struct tile *pdesttile,
                                         embark_to, FALSE)) {
     int move_cost = map_move_cost_unit(punit, pdesttile);
 
+    /* May cause an incident */
+    action_consequence_success(NULL, pplayer,
+                               tile_owner(pdesttile),
+                               pdesttile, tile_link(pdesttile));
+
     unit_move(punit, pdesttile, move_cost, embark_to,
               FALSE);
 

@@ -111,6 +111,11 @@ static void action_notify_ai(const struct action *paction,
                              struct player *offender,
                              struct player *victim_player)
 {
+  if (paction == NULL) {
+    /* Ugly hack for the lack of "Unit Move" */
+    return;
+  }
+
   const enum incident_type incident = action_to_incident(paction);
 
   /* Notify the victim player. */
@@ -396,6 +401,15 @@ static void notify_actor_success(struct player *receiver,
     return;
   }
 
+  if (paction == NULL) {
+    /* Ugly hack for the lack of "Unit Move" */
+    notify_player(receiver, victim_tile,
+                  E_DIPLOMATIC_INCIDENT, ftc_server,
+                  _("You have caused an incident moving to %s."),
+                  victim_link);
+    return;
+  }
+
   /* Custom message based on action type. */
   switch (action_get_target_kind(paction)) {
   case ATK_CITY:
@@ -446,6 +460,17 @@ static void notify_victim_success(struct player *receiver,
 {
   if (!victim_player || offender == victim_player) {
     /* There is no victim or the actor did this to him self. */
+    return;
+  }
+
+  if (paction == NULL) {
+    /* Ugly hack for the lack of "Unit Move" */
+    notify_player(receiver, victim_tile,
+                  E_DIPLOMATIC_INCIDENT, ftc_server,
+                  /* TRANS: Europeans ... Suitcase Nuke ... San Francisco */
+                  _("The %s have caused an incident moving to %s."),
+                  nation_plural_for_player(offender),
+                  victim_link);
     return;
   }
 
@@ -501,12 +526,30 @@ static void notify_global_success(struct player *receiver,
                                   const char *victim_link)
 {
   if (receiver == offender) {
+    if (paction == NULL) {
+      /* Ugly hack for the lack of "Unit Move" */
+      notify_player(receiver, victim_tile,
+                    E_DIPLOMATIC_INCIDENT, ftc_server,
+                    _("Moving gives everyone a casus belli against you."));
+      return;
+    }
+
     notify_player(receiver, victim_tile,
                   E_DIPLOMATIC_INCIDENT, ftc_server,
                   /* TRANS: Suitcase Nuke */
                   _("Doing %s gives everyone a casus belli against you."),
                   action_name_translation(paction));
   } else if (receiver == victim_player) {
+    if (paction == NULL) {
+      /* Ugly hack for the lack of "Unit Move" */
+      notify_player(receiver, victim_tile,
+                    E_DIPLOMATIC_INCIDENT, ftc_server,
+                    _("Moving to you gives everyone a casus belli against "
+                      "the %s."),
+                    nation_plural_for_player(offender));
+      return;
+    }
+
     notify_player(receiver, victim_tile,
                   E_DIPLOMATIC_INCIDENT, ftc_server,
                   /* TRANS: Suitcase Nuke ... Europeans */
@@ -515,6 +558,15 @@ static void notify_global_success(struct player *receiver,
                   action_name_translation(paction),
                   nation_plural_for_player(offender));
   } else if (victim_player == NULL) {
+    if (paction == NULL) {
+      /* Ugly hack for the lack of "Unit Move" */
+      notify_player(receiver, victim_tile,
+                    E_DIPLOMATIC_INCIDENT, ftc_server,
+                    _("You now have a casus belli against the %s. "
+                      "They moved."),
+                    nation_plural_for_player(offender));
+      return;
+    }
     notify_player(receiver, victim_tile,
                   E_DIPLOMATIC_INCIDENT, ftc_server,
                   /* TRANS: Europeans ... Suitcase Nuke */
@@ -523,6 +575,16 @@ static void notify_global_success(struct player *receiver,
                   nation_plural_for_player(offender),
                   action_name_translation(paction));
   } else {
+    if (paction == NULL) {
+      /* Ugly hack for the lack of "Unit Move" */
+      notify_player(receiver, victim_tile,
+                    E_DIPLOMATIC_INCIDENT, ftc_server,
+                    _("You now have a casus belli against the %s. "
+                      "They moved to the %s."),
+                    nation_plural_for_player(offender),
+                    nation_plural_for_player(victim_player));
+      return;
+    }
     notify_player(receiver, victim_tile,
                   E_DIPLOMATIC_INCIDENT, ftc_server,
                   /* TRANS: Europeans ... Suitcase Nuke ... Americans */
