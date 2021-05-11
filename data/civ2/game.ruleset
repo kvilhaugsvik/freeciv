@@ -1194,6 +1194,10 @@ actor_reqs    =
     { "type",          "name",         "range"
       "UnitFlag",      "Settlers",     "Local"
     }
+target_reqs    =
+    { "type",         "name",    "range"
+      "TerrainAlter", "CanRoad", "Local"
+    }
 
 [actionenabler_base]
 action        = "Build Base"

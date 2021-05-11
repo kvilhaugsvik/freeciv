@@ -826,6 +826,10 @@ colorlist =
     { "r", "g", "b"
       255,   0,   0
     }
+target_reqs    =
+    { "type",         "name",    "range"
+      "TerrainAlter", "CanRoad", "Local"
+    }
 
 [teams]
 ; freeciv optional team names definition.
